@@ -1,0 +1,4 @@
+functions/
+*-function.json
+src/scripts/test.js
+dist/

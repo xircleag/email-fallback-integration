@@ -1,0 +1,35 @@
+{
+  "name": "layer-serverless-email-fallback-azure",
+  "version": "1.0.0-pre1.0",
+  "description": "Layer Email Fallback Integration using Serverless and Azure",
+  "author": "Nil Gradisnik <nil@layer.com>",
+  "license": "MIT",
+  "repository": "layerhq/serverless-email-fallback",
+  "scripts": {
+    "build": "webpack",
+    "package": "node src/scripts/createStorageTableQueue",
+    "deploy": "npm install; npm run package; npm run build; serverless deploy",
+    "test": "LAYER_CONFIG=../test/mock/layer_config_test.json LOG_LEVEL=none sls invoke test"
+  },
+  "eslintConfig": {
+    "globals": {
+      "window": true
+    }
+  },
+  "dependencies": {
+    "@layerhq/idk": "^1.0.0-pre1.0",
+    "azure-storage": "^2.2.2",
+    "common": "file:./common/",
+    "human-to-cron": "^0.3.1",
+    "ms": "^2.0.0"
+  },
+  "devDependencies": {
+    "brfs": "^1.4.3",
+    "proxyquire": "^1.8.0",
+    "serverless-azure-functions": "*",
+    "serverless-mocha-plugin": "^1.7.0",
+    "standard": "^10.0.3",
+    "transform-loader": "^0.2.4",
+    "webpack": "^3.7.1"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "common",
+  "version": "1.0.0",
+  "description": "Email fallback common",
+  "dependencies": {
+    "@sendgrid/mail": "^6.0.0",
+    "mustache": "^2.3.0"
+  }
+}

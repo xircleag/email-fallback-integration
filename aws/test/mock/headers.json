@@ -1,0 +1,21 @@
+{
+   "CloudFront-Forwarded-Proto":"https",
+   "CloudFront-Is-Desktop-Viewer":"true",
+   "CloudFront-Is-Mobile-Viewer":"false",
+   "CloudFront-Is-SmartTV-Viewer":"false",
+   "CloudFront-Is-Tablet-Viewer":"false",
+   "CloudFront-Viewer-Country":"US",
+   "Content-Type":"application/vnd.layer.webhooks+json; version=2.0",
+   "Host":"5dpqdhoisa.execute-api.us-east-1.amazonaws.com",
+   "layer-webhook-event-type":"Message.created",
+   "layer-webhook-id":"layer:///apps/9ec30af8-5591-11e4-af9e-f7a201004a3b/webhooks/c549907d-f0c3-4c72-81fb-4eb641812a6a",
+   "layer-webhook-request-id":"66cfb7c5-b742-458e-8c74-32bbd1c75f46",
+   "layer-webhook-signature":"70ea43206407292d75e63ec3f960c7c96e706137",
+   "User-Agent":"layer-webhooks/1.0",
+   "Via":"1.1 1c63b4647ec0b0f34169351e85c6a07a.cloudfront.net (CloudFront)",
+   "X-Amz-Cf-Id":"TQ6ZK2g_pIpxmeeMxiG4MO8SdLU30SBf7-6nJRWmfvXOvFFIa-YzdA==",
+   "X-Amzn-Trace-Id":"Root=1-59ceae73-3126775230ef54eb572d6214",
+   "X-Forwarded-For":"130.211.133.134, 54.182.212.70",
+   "X-Forwarded-Port":"443",
+   "X-Forwarded-Proto":"https"
+}

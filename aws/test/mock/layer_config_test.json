@@ -1,0 +1,28 @@
+{
+  "app_id": "layer:///apps/staging/9ec30af8-5591-11e4-af9e-f7a201004a3a",
+  "service_name": "layer-serverless-email-fallback",
+  "provider": "aws",
+  "webhook": {
+    "secret": "test123",
+    "events": [
+      "Message.created",
+      "Message.deleted",
+      "Receipt.created",
+      "Conversation.deleted",
+      "Participation.deleted"
+    ]
+  },
+  "api": {
+    "token": "secretoken",
+    "permissions": []
+  },
+  "fallback_delay": "6 minutes",
+  "email": {
+    "sendgrid_key": "my-sendgrid-api-key",
+    "subject": "Testing AWS",
+    "from": "foo@bar.com",
+    "reply_to": "foo@bar.com"
+  },
+  "kinesis_arn": "arn:aws:kinesis:us-east-1:DATETIME:stream/email-fallback",
+  "kinesis_shards": "1"
+}

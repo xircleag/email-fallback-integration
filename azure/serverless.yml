@@ -1,0 +1,73 @@
+
+service: layer-email-fallback-azure
+
+provider:
+  name: azure
+  location: West US
+  stage: dev
+  timeout: 10s
+  environment:
+    QueueStorageConnection: ${self:custom.queueStorageConnection}
+
+custom:
+  tableName: ${file(./src/config.js):tableName}
+  scheduleRate: ${file(./src/config.js):scheduleRate}
+  queueStorageName: ${file(./src/config.js):queueStorageName}
+  queueStorageConnection: ${file(./src/config.js):queueStorageConnection}
+
+plugins:
+  - serverless-azure-functions
+  - serverless-mocha-plugin
+
+functions:
+  webhook:
+    handler: dist/bundle.webhook
+    description: 'Layer Email Fallback Webhook process endpoint'
+    events:
+      - http: true
+        x-azure-settings:
+          methods:
+            - POST
+          route: webhook
+          authLevel: anonymous
+      - http: true
+        x-azure-settings:
+          type: http
+          direction: out
+          name: res
+      - queue: ${self:custom.queueStorageName}
+        x-azure-settings:
+          name: $return
+          connection: QueueStorageConnection
+          direction: out
+  ingest:
+    handler: dist/bundle.ingest
+    description: 'Ingest from ServiceBus'
+    events:
+      - queue: ${self:custom.queueStorageName}
+        x-azure-settings:
+          name: item
+          connection: QueueStorageConnection
+  verify:
+    handler: dist/bundle.verify
+    description: 'Layer Email Fallback Webhook verification endpoint'
+    events:
+      - http: true
+        x-azure-settings:
+          methods:
+            - GET
+          route: webhook
+          authLevel: anonymous
+      - http: true
+        x-azure-settings:
+          type: http
+          direction: out
+          name: res
+  schedule:
+    handler: dist/bundle.schedule
+    description: 'Layer Email Fallback Schedule event that triggers email fallback'
+    events:
+      - timer:
+        x-azure-settings:
+            name: item
+            schedule: ${self:custom.scheduleRate}

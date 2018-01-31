@@ -1,0 +1,66 @@
+
+name: 'Email Fallback Integration'
+provider: azure
+
+webhook:
+  type: post-event
+  events:
+    - Message.created
+    - Message.deleted
+    - Receipt.created
+    - Conversation.deleted
+    - Participation.deleted
+
+api:
+  permissions: []
+
+input:
+  -
+    key: fallback_delay
+    type: text
+    default: "2 days"
+    name: Email fallback delay
+    description: Email fallback delay time expressed as a string
+    required: true
+  -
+    key: email.sendgrid_key
+    type: text
+    default: null
+    name: Sendgrid API key
+    description: API key for Sendgrid email service
+    required: true
+  -
+    key: email.subject
+    type: text
+    default: null
+    name: Email Subject
+    description: Email subject for the template
+    required: true
+  -
+    key: email.from
+    type: email
+    default: null
+    name: Email From address
+    description: Which address this email is coming from
+    required: true
+  -
+    key: email.reply_to
+    type: email
+    default: null
+    name: Email Reply to address
+    description: Which address to use as reply-to for this email
+    required: true
+  -
+    key: storage_account_name
+    type: text
+    default: null
+    name: Azure Storage account name
+    description: Storage account name used for TableDB
+    required: true
+  -
+    key: storage_access_key
+    type: text
+    default: null
+    name: Azure Storage access key
+    description: Storage access key used for TableDB
+    required: true

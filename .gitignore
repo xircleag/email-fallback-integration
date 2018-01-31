@@ -1,0 +1,10 @@
+# package directories
+node_modules
+jspm_packages
+npm-debug.log
+
+# Serverless directories
+.serverless
+
+# Configuration
+layer_config.json
