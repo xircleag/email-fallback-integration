@@ -31,7 +31,9 @@ Templates are powered by [Mustache](https://github.com/janl/mustache.js) engine 
       "messages": [
         {
           "id": "layer:///messages/ffffffff-ffff-ffff-ffff-ffffffffffff",
-          "body": "foo bar"
+          "body": "foo bar",
+          "sender_name": "Jane Doe",
+          "sent_at": 1522360370752
         }
       ]
     }

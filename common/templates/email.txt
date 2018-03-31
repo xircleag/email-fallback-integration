@@ -4,10 +4,10 @@ You have unread messages waiting for you:
 
 {{#conversations}}
 {{{conversation_id}}}
-{{#messages}}
-"{{body}}"
-{{/messages}}
 
+{{#messages}}
+[{{{sent_at}}}] {{sender_name}} said: "{{body}}"
+{{/messages}}
 {{/conversations}}
 
 Email fallback service

@@ -15,8 +15,8 @@ exports.webhook = (context, req) => {
 
   try {
     const webhook = layerIDK.webhook(req.headers, req.body)
+    log.info(`Webhook: ${webhook.event.type}`)
 
-    // Filter non-conversation events
     if (webhook.event.type === 'Message.created' || webhook.event.type === 'Message.deleted') {
       if (!webhook.message.conversation) {
         log.info('Webhook: Not a conversation')
@@ -24,9 +24,14 @@ exports.webhook = (context, req) => {
         context.done()
         return
       }
+      if (!Email.filterReadRecipients(webhook.message.recipient_status).length) {
+        log.info('Webhook: No valid recipients')
+        context.res = { status: 200 }
+        context.done()
+        return
+      }
     }
 
-    log.info('Webhook:', webhook.event)
     context.res = { status: 200 }
     context.done(null, webhook)
   } catch (err) {

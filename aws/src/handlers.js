@@ -15,17 +15,21 @@ exports.webhook = (event, context, callback) => {
 
   try {
     const webhook = layerIDK.webhook(event.headers, event.body)
+    log.info(`Webhook: ${webhook.event.type}`)
 
-    // Filter non-conversation events
     if (webhook.event.type === 'Message.created' || webhook.event.type === 'Message.deleted') {
       if (!webhook.message.conversation) {
         log.info('Webhook: Not a conversation')
-        callback(null, { statusCode: 204 })
+        callback(null, { statusCode: 200 })
+        return
+      }
+      if (!Email.filterReadRecipients(webhook.message.recipient_status).length) {
+        log.info('Webhook: No valid recipients')
+        callback(null, { statusCode: 200 })
         return
       }
     }
 
-    log.info('Webhook:', webhook.event)
     kinesis.insert(webhook)
       .then(() => {
         log.info('Webhook: OK')
@@ -104,7 +108,7 @@ exports.schedule = (event, context, callback) => {
         operations.push(() => operation(userId, res[userId]))
       })
 
-      log.info('Schedule:', operations.length, 'operations')
+      log.info(`Schedule: ${operations.length} operations`)
       return LayerIDK.promiseSerial(operations)
     })
     .then(() => {

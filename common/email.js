@@ -27,7 +27,7 @@ module.exports = class Email {
     }
 
     if (!this.email.sendgrid_key) { // NOTE: for testing
-      return Promise.resolve(mustache.render(this.templateText, templateData))
+      return Promise.resolve(templateData)
     }
 
     return sendgrid.send({
@@ -42,6 +42,17 @@ module.exports = class Email {
   }
 
   /**
+   * Filter recipients by status
+   */
+  static filterReadRecipients (recipients) {
+    const userIds = []
+    Object.keys(recipients).forEach((userId) => {
+      if (recipients[userId] !== 'read') userIds.push(userId)
+    })
+    return userIds
+  }
+
+  /**
    * Group by conversation for email template
    */
   static groupByConversation (items) {
@@ -51,7 +62,9 @@ module.exports = class Email {
       try {
         hash[conversationId].push({
           id: Email.idPrefix('messages', item.message_id),
-          body: JSON.parse(item.message_body).text
+          body: JSON.parse(item.message_body).text,
+          sender_name: item.sender_name || 'Unknown Sender',
+          sent_at: item.sent_at || null
         })
       }
       catch (e) {

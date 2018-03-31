@@ -3,6 +3,7 @@
 const LayerIDK = require('@layerhq/idk')
 const AWS = require('aws-sdk')
 
+const Email = require('common/email')
 const config = require('./config')
 
 AWS.config.setPromisesDependency(Promise)
@@ -40,19 +41,8 @@ function messageCreated (webhook) {
   const messageBody = LayerIDK.getMessageText(message)
   if (!messageBody) return Promise.resolve()
 
-  const recipients = []
-  Object.keys(message.recipient_status).forEach((userId) => {
-    const status = message.recipient_status[userId]
-    if (status !== 'read') recipients.push(userId)
-  })
+  const recipients = Email.filterReadRecipients(message.recipient_status)
   if (!recipients.length) return Promise.resolve()
-
-  const data = {
-    message_position: `${message.conversation.id}@${message.position}`,
-    message_id: message.id,
-    sent_at: new Date(message.sent_at).getTime(),
-    message_body: messageBody
-  }
 
   return docClient.batchWrite({
     RequestItems: {
@@ -61,10 +51,12 @@ function messageCreated (webhook) {
           PutRequest: {
             Item: {
               user_id: userId,
-              message_position: data.message_position,
-              message_id: data.message_id,
-              sent_at: data.sent_at,
-              message_body: data.message_body
+              message_position: `${message.conversation.id}@${message.position}`,
+              message_id: message.id,
+              message_body: messageBody,
+              sent_at: new Date(message.sent_at).getTime(),
+              sender_id: message.sender.id,
+              sender_name: message.sender.display_name
             }
           }
         }
@@ -120,11 +112,7 @@ function messageDeleted (webhook) {
   const message = webhook.message
   const messagePosition = `${message.conversation.id}@${message.position}`
 
-  const recipients = []
-  Object.keys(message.recipient_status).forEach((userId) => {
-    const status = message.recipient_status[userId]
-    if (status !== 'read') recipients.push(userId)
-  })
+  const recipients = Email.filterReadRecipients(message.recipient_status)
   if (!recipients.length) return Promise.resolve()
 
   return docClient.batchWrite({
@@ -196,7 +184,7 @@ exports.getAll = () => {
   const delta = (Date.now() - config.fallbackMilliseconds()).toString()
   const params = {
     TableName,
-    ProjectionExpression: 'user_id, message_position, message_id, message_body',
+    ProjectionExpression: 'user_id, message_position, message_id, message_body, sent_at, sender_name, sender_id',
     FilterExpression: 'sent_at < :fallbackTime',
     ExpressionAttributeValues: { ':fallbackTime': { 'N': delta } }
   }
@@ -226,7 +214,10 @@ function groupByUserId (items) {
     const message = {
       message_position: item.message_position.S,
       message_id: item.message_id.S,
-      message_body: item.message_body.S
+      message_body: item.message_body.S,
+      sent_at: item.sent_at.N,
+      sender_id: item.sender_id.S,
+      sender_name: item.sender_name.S
     }
 
     if (!hash[userId]) hash[userId] = []

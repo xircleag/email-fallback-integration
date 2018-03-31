@@ -3,6 +3,7 @@
 const LayerIDK = require('@layerhq/idk')
 const azure = require('azure-storage')
 
+const Email = require('common/email')
 const config = require('./config')
 
 const client = azure.createTableService(config.tableDBAccountName(), config.tableDBAccessKey())
@@ -42,24 +43,22 @@ function messageCreated (message) {
   const messageBody = LayerIDK.getMessageText(message)
   if (!messageBody) return Promise.resolve()
 
+  const recipients = Email.filterReadRecipients(message.recipient_status)
+  if (!recipients.length) return Promise.resolve()
+
   const operations = []
-  Object.keys(message.recipient_status).forEach((recipientId) => {
-    const userId = LayerIDK.toUUID(recipientId)
+  recipients.forEach((userId) => {
     const messagePosition = getMessagePosition(message.conversation.id, message.position)
-
-    const status = message.recipient_status[recipientId]
-    if (status !== 'read') {
-      operations.push(() => insertEntity({
-        PartitionKey: generator.String(userId),
-        RowKey: generator.String(messagePosition),
-        message_id: generator.String(message.id),
-        sent_at: generator.DateTime(new Date(message.sent_at)),
-        message_body: generator.String(messageBody)
-      }))
-    }
+    operations.push(() => insertEntity({
+      PartitionKey: generator.String(LayerIDK.toUUID(userId)),
+      RowKey: generator.String(messagePosition),
+      message_id: generator.String(message.id),
+      message_body: generator.String(messageBody),
+      sent_at: generator.DateTime(new Date(message.sent_at)),
+      sender_id: generator.String(message.sender.id),
+      sender_name: generator.String(message.sender.display_name)
+    }))
   })
-
-  if (operations.length === 0) return Promise.resolve()
   return LayerIDK.promiseSerial(operations)
 }
 
@@ -110,21 +109,16 @@ function markAllRead (userId, conversationId) {
 }
 
 function messageDeleted (message) {
+  const recipients = Email.filterReadRecipients(message.recipient_status)
+  if (!recipients.length) return Promise.resolve()
+
   const entities = []
-
-  Object.keys(message.recipient_status).forEach((recipientId) => {
-    const status = message.recipient_status[recipientId]
-    if (status !== 'read') {
-      const userId = LayerIDK.toUUID(recipientId)
-      const messagePosition = getMessagePosition(message.conversation.id, message.position)
-      entities.push({
-        PartitionKey: {'_': userId},
-        RowKey: {'_': messagePosition}
-      })
-    }
+  recipients.forEach((userId) => {
+    entities.push({
+      PartitionKey: {'_': LayerIDK.toUUID(userId)},
+      RowKey: {'_': getMessagePosition(message.conversation.id, message.position)}
+    })
   })
-
-  if (!entities.length) return Promise.resolve()
 
   const batch = new azure.TableBatch()
   entities.forEach(entity => batch.deleteEntity(entity, { echoContent: true }))
@@ -200,7 +194,10 @@ function groupByUserId (items) {
     const message = {
       message_position: item.RowKey._,
       message_id: item.message_id._,
-      message_body: item.message_body._
+      message_body: item.message_body._,
+      sent_at: item.sent_at._,
+      sender_id: item.sender_id._,
+      sender_name: item.sender_name._
     }
 
     if (!hash[userId]) hash[userId] = []

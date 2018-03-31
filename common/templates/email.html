@@ -65,12 +65,15 @@
                 <p>You have unread messages waiting for you:</p>
 
                 {{#conversations}}
-                <h4>{{{conversation_id}}}</h4>
-                <p>
+                <h3>In a <a href="{{{conversation_id}}}">conversation</a></h3>
+                <div>
                   {{#messages}}
-                    "{{body}}"<br>
+                    <p>
+                      <small>{{{sent_at}}}</small>
+                      <b>{{sender_name}}</b> said: <i>"{{body}}"</i>
+                    </p>
                   {{/messages}}
-                </p>
+                </div>
                 {{/conversations}}
 
                 <br>

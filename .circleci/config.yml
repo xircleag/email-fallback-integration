@@ -19,14 +19,14 @@ jobs:
 
       - restore_cache:
           keys:
-            - aws-node-modules-{{ arch }}-{{ .Branch }}-{{ checksum "~/repo/aws/package.json" }}
+            - aws-v1-{{ arch }}-{{ .Branch }}-{{ checksum "~/repo/aws/package.json" }}
 
       - run:
           command: npm install
           working_directory: ~/repo/aws
 
       - save_cache:
-          key: aws-node-modules-{{ arch }}-{{ .Branch }}-{{ checksum "~/repo/aws/package.json" }}
+          key: aws-v1-{{ arch }}-{{ .Branch }}-{{ checksum "~/repo/aws/package.json" }}
           paths:
             - ~/repo/aws/node_modules
 
@@ -36,17 +36,34 @@ jobs:
 
       - restore_cache:
           keys:
-            - azure-node-modules-{{ arch }}-{{ .Branch }}-{{ checksum "~/repo/azure/package.json" }}
+            - azure-v1-{{ arch }}-{{ .Branch }}-{{ checksum "~/repo/azure/package.json" }}
 
       - run:
           command: npm install
           working_directory: ~/repo/azure
 
       - save_cache:
-          key: azure-node-modules-{{ arch }}-{{ .Branch }}-{{ checksum "~/repo/azure/package.json" }}
+          key: azure-v1-{{ arch }}-{{ .Branch }}-{{ checksum "~/repo/azure/package.json" }}
           paths:
             - ~/repo/azure/node_modules
 
       - run:
           command: npm test
           working_directory: ~/repo/azure
+
+      - restore_cache:
+          keys:
+            - common-v1-{{ arch }}-{{ .Branch }}-{{ checksum "~/repo/common/package.json" }}
+
+      - run:
+          command: npm install
+          working_directory: ~/repo/common
+
+      - save_cache:
+          key: common-v1-{{ arch }}-{{ .Branch }}-{{ checksum "~/repo/common/package.json" }}
+          paths:
+            - ~/repo/common/node_modules
+
+      - run:
+          command: npm test
+          working_directory: ~/repo/common
