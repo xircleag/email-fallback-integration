@@ -1,6 +1,6 @@
 {
   "name": "layer-serverless-email-fallback-azure",
-  "version": "1.0.0-pre1.0",
+  "version": "1.0.0",
   "description": "Layer Email Fallback Integration using Serverless and Azure",
   "author": "Nil Gradisnik <nil@layer.com>",
   "license": "MIT",
@@ -17,8 +17,8 @@
     }
   },
   "dependencies": {
-    "@layerhq/idk": "^1.0.0-pre1.0",
-    "azure-storage": "^2.2.2",
+    "@layerhq/idk": "^1.0.0",
+    "azure-storage": "^2.8.1",
     "common": "file:./common/",
     "human-to-cron": "^0.3.1",
     "ms": "^2.0.0"

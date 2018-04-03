@@ -1,7 +1,7 @@
 # Email Fallback Integration
 [![Build Status](https://circleci.com/gh/layerhq/email-fallback-integration.png?circle-token=49471f2e2e4a0e991c5316ed09695d3373ec6377)](https://circleci.com/gh/layerhq/email-fallback-integration)
 
-Email Fallback Integration, built using the Layer [Integration Development Kit](https://preview-docs.layer.com/reference/integrations/framework). This integration is designed to provide a turn-key solution for the deployment of an email fallback mechanism that will deliver an email after a specific amount of time has passed and the message remains unread in a conversation.
+Email Fallback Integration, built using the Layer [Integration Development Kit](https://docs.layer.com/reference/integrations/framework). This integration is designed to provide a turn-key solution for the deployment of an email fallback mechanism that will deliver an email after a specific amount of time has passed and the message remains unread in a conversation.
 
 ## Prerequisites
 

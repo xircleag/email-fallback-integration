@@ -1,6 +1,6 @@
 # Email Fallback Integration
 
-Email Fallback Integration, built using the Layer [Integration Development Kit](https://preview-docs.layer.com/reference/integrations/framework).
+Email Fallback Integration, built using the Layer [Integration Development Kit](https://docs.layer.com/reference/integrations/framework).
 
 ## Amazon AWS
 

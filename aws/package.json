@@ -1,6 +1,6 @@
 {
   "name": "layer-serverless-email-fallback-aws",
-  "version": "1.0.0-pre1.0",
+  "version": "1.0.0",
   "description": "Layer Email Fallback Integration using Serverless and AWS",
   "author": "Layer inc. <dev@layer.com>",
   "license": "MIT",
@@ -10,7 +10,7 @@
     "test": "LAYER_CONFIG=../test/mock/layer_config_test.json LOG_LEVEL=none sls invoke test"
   },
   "dependencies": {
-    "@layerhq/idk": "^1.0.0-pre1.0",
+    "@layerhq/idk": "^1.0.0",
     "aws-sdk": "^2.105.0",
     "common": "file:./common/",
     "ms": "^1.0.0"
